@@ -5,5 +5,5 @@ export function nextSelectedHole(selectedIndex, dx, dy, rows, cols) {
   const col = selectedIndex % cols;
   const newRow = Math.min(rows - 1, Math.max(0, row + dy));
   const newCol = Math.min(cols - 1, Math.max(0, col + dx));
-  return newRow * rows + newCol;
+  return newRow * cols + newCol;
 }
