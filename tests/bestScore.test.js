@@ -52,6 +52,30 @@ describe('updateBestScore', () => {
     expect(loadBestScore(storage)).toBe(20);
   });
 
+  it('keeps the previous best and flags no new best when the score ties', () => {
+    let setItemCalled = false;
+    const storage = {
+      getItem: () => '20',
+      setItem: () => {
+        setItemCalled = true;
+      },
+    };
+    expect(updateBestScore(20, storage)).toEqual({ best: 20, isNewBest: false });
+    expect(setItemCalled).toBe(false);
+  });
+
+  it('flags no new best and does not persist for a zero score on empty storage', () => {
+    let setItemCalled = false;
+    const storage = {
+      getItem: () => null,
+      setItem: () => {
+        setItemCalled = true;
+      },
+    };
+    expect(updateBestScore(0, storage)).toEqual({ best: 0, isNewBest: false });
+    expect(setItemCalled).toBe(false);
+  });
+
   it('updates the best score and flags it when the score is higher', () => {
     const storage = memoryStorage({ 'whack-a-mole.best-score': '20' });
     expect(updateBestScore(21, storage)).toEqual({ best: 21, isNewBest: true });
