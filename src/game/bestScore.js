@@ -27,7 +27,7 @@ export function loadBestScore(storage = defaultStorage()) {
 
 export function updateBestScore(score, storage = defaultStorage()) {
   const current = loadBestScore(storage);
-  if (!Number.isFinite(score) || score < 0 || score < current) {
+  if (!Number.isFinite(score) || score < 0 || score <= current) {
     return { best: current, isNewBest: false };
   }
   try {
