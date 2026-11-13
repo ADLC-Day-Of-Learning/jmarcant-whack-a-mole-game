@@ -46,4 +46,48 @@ describe('nextSelectedHole', () => {
     expect(nextSelectedHole(7, 0, -1, GRID_ROWS, GRID_COLS)).toBe(4);
   });
 
+  it('navigates correctly on non-square grids', () => {
+    const rows = 2;
+    const cols = 3;
+
+    // Move right in top row: (0, 0) -> (0, 1)
+    expect(nextSelectedHole(0, 1, 0, rows, cols)).toBe(1);
+
+    // Move down to bottom row: (0, 2) -> (1, 2)
+    expect(nextSelectedHole(2, 0, 1, rows, cols)).toBe(5);
+
+    // Clamping at boundaries
+    expect(nextSelectedHole(3, -1, 0, rows, cols)).toBe(3);
+
+    // Ensure all transitions stay strictly within valid bounds [0, rows * cols - 1]
+    const moves = [
+      [1, 0],
+      [-1, 0],
+      [0, 1],
+      [0, -1],
+      [1, 1],
+      [-1, -1],
+    ];
+    for (let idx = 0; idx < rows * cols; idx++) {
+      for (const [dx, dy] of moves) {
+        const next = nextSelectedHole(idx, dx, dy, rows, cols);
+        expect(next).toBeGreaterThanOrEqual(0);
+        expect(next).toBeLessThan(rows * cols);
+      }
+    }
+  });
+
+  it('navigates correctly when rows > cols on non-square grids', () => {
+    const rows = 3;
+    const cols = 2;
+
+    // (1, 1) [index 3] moving down -> (2, 1) [index 5]
+    expect(nextSelectedHole(3, 0, 1, rows, cols)).toBe(5);
+
+    for (let idx = 0; idx < rows * cols; idx++) {
+      const nextDown = nextSelectedHole(idx, 0, 1, rows, cols);
+      expect(nextDown).toBeGreaterThanOrEqual(0);
+      expect(nextDown).toBeLessThan(rows * cols);
+    }
+  });
 });
